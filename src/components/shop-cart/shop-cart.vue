@@ -25,17 +25,6 @@
 <script>
 import Bubble from 'components/bubble/bubble'
 
-const BALL_LEN = 10
-const innerClsHook = 'inner-hook'
-
-function createBalls() {
-  let balls = []
-  for (let i = 0; i < BALL_LEN; i++) {
-    balls.push({ show: false })
-  }
-  return balls
-}
-
 export default {
   name: 'shop-cart',
   props: {
@@ -64,12 +53,8 @@ export default {
   },
   data() {
     return {
-      balls: createBalls(),
       listFold: this.fold
     }
-  },
-  created() {
-    this.dropBalls = []
   },
   computed: {
     totalPrice() {
@@ -127,49 +112,6 @@ export default {
         content: `您需要支付${this.totalPrice}元`
       }).show()
       e.stopPropagation()
-    },
-    drop(el) {
-      console.log(el)
-      for (let i = 0; i < this.balls.length; i++) {
-        const ball = this.balls[i]
-        if (!ball.show) {
-          ball.show = true
-          ball.el = el
-          this.dropBalls.push(ball)
-          return
-        }
-      }
-    },
-    beforeDrop(el) {
-      const ball = this.dropBalls[this.dropBalls.length - 1]
-      const rect = ball.el.target.getBoundingClientRect()
-      // const x = rect.left - 32
-      // const y = -(window.innerHeight - rect.top - 22)
-      el.style.left = rect.left + 'px'
-      el.style.top = (rect.top - 177) + 'px'
-      // const inner = el.getElementsByClassName(innerClsHook)[0]
-      // inner.style.transform = inner.style.webkitTransform = `translate3d(${x}px,0,0)`
-    },
-    beginDrop() {
-      const ball = this.dropBalls[this.dropBalls.length - 1]
-      // ball.show = false
-    },
-    dropping(el, done) {
-      el.style.top = '645px'
-      // el.style.bottom = '22px'
-      el.style.left = '32px'
-      // this._reflow = document.body.offsetHeight
-      // el.style.transform = el.style.webkitTransform = `translate3d(0,0,0)`
-      // const inner = el.getElementsByClassName(innerClsHook)[0]
-      // inner.style.transform = inner.style.webkitTransform = `translate3d(0,0,0)`
-      // el.addEventListener('transitionend', done)
-    },
-    afterDrop(el) {
-      const ball = this.dropBalls.shift()
-      // if (ball) {
-      //   ball.show = false
-      //   el.style.display = 'none'
-      // }
     },
     _showShopCartList() {
       this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
@@ -230,74 +172,74 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .shopcart
-  height 100%
+  height: 100%
   .content
-    display flex
-    background $color-background
-    font-size 0
-    color $color-light-grey
+    display: flex
+    background: $color-background
+    font-size: 0
+    color: $color-light-grey
     .content-left
-      flex 1
+      flex: 1
       .logo-wrapper
-        display inline-block
-        vertical-align top
-        position relative
-        top -10px
-        margin 0 12px
-        padding 6px
-        width 56px
-        height 56px
-        box-sizing border-box
-        border-radius 50%
-        background $color-background
+        display: inline-block
+        vertical-align: top
+        position: relative
+        top: -10px
+        margin: 0 12px
+        padding: 6px
+        width: 56px
+        height: 56px
+        box-sizing: border-box
+        border-radius: 50%
+        background: $color-background
         .logo
-          width 100%
-          height 100%
-          border-radius 50%
-          text-align center
-          background $color-dark-grey
+          width: 100%
+          height: 100%
+          border-radius: 50%
+          text-align: center
+          background: $color-dark-grey
           &.highlight
-            background $color-blue
+            background: $color-blue
           .icon-shopping_cart
-            line-height 44px
-            font-size $fontsize-large-xxx
-            color $color-light-grey
+            line-height: 44px
+            font-size: $fontsize-large-xxx
+            color: $color-light-grey
             &.highlight
-              color $color-white
+              color: $color-white
         .num
-          position absolute
-          top 0
-          right 0
+          position: absolute
+          top: 0
+          right: 0
       .price
-        display inline-block
-        vertical-align top
-        margin-top 12px
-        line-height 24px
-        padding-right 12px
-        box-sizing border-box
-        border-right 1px solid rgba(255, 255, 255, 0.1)
-        font-weight 700
-        font-size $fontsize-large
+        display: inline-block
+        vertical-align: top
+        margin-top: 12px
+        line-height: 24px
+        padding-right: 12px
+        box-sizing: border-box
+        border-right: 1px solid rgba(255, 255, 255, 0.1)
+        font-weight: 700
+        font-size: $fontsize-large
         &.highlight
-          color $color-white
+          color: $color-white
       .desc
-        display inline-block
-        vertical-align top
-        margin 12px 0 0 12px
-        line-height 24px
-        font-size $fontsize-small-s
+        display: inline-block
+        vertical-align: top
+        margin: 12px 0 0 12px
+        line-height: 24px
+        font-size: $fontsize-small-s
     .content-right
-      flex 0 0 105px
-      width 105px
+      flex: 0 0 105px
+      width: 105px
       .pay
-        height 48px
-        line-height 48px
-        text-align center
-        font-weight 700
-        font-size $fontsize-small
+        height: 48px
+        line-height: 48px
+        text-align: center
+        font-weight: 700
+        font-size: $fontsize-small
         &.not-enough
-          background $color-dark-grey
+          background: $color-dark-grey
         &.enough
-          background $color-green
-          color $color-white
+          background: $color-green
+          color: $color-white
 </style>

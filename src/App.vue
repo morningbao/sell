@@ -22,7 +22,9 @@ export default {
   name: 'app',
   data: function () {
     return {
-      seller: {}
+      seller: {
+        id: 1
+      }
     }
   },
   computed: {
@@ -75,9 +77,9 @@ export default {
 <style lang="stylus">
 #app
   .v-content-wrapper
-    position fixed
-    top 136px
-    left 0
-    right 0
-    bottom 0
+    position: fixed
+    top: 136px
+    left: 0
+    right: 0
+    bottom: 0
 </style>

@@ -14,7 +14,7 @@
                 <support-icon v-if="props.txt.type>=1" :size="3" :type="props.txt.type"></support-icon>
                 <span>{{props.txt.name}}</span>
                 <span class="num" v-if="props.txt.count"></span>
-              </div> 
+              </div>
             </template>
           </cube-scroll-nav-bar>
         </template>
