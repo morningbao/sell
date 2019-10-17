@@ -55,11 +55,11 @@
       </cube-scroll-nav>
     </div>
     <div class="shop-cart-wrapper">
-      <shop-cart
+      <!-- <shop-cart
         ref="shopCart"
         :select-foods="selectFoods"
         :delivery-price="seller.deliveryPrice"
-        :min-price="seller.minPrice"></shop-cart>
+        :min-price="seller.minPrice"></shop-cart> -->
     </div>
   </div>
 </template>
@@ -77,6 +77,10 @@ export default {
       default() {
         return {}
       }
+    },
+    currentFlag: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -121,6 +125,15 @@ export default {
       return ret
     }
   },
+  mounted() {
+    this.shopCartComp = this.shopCartComp || this.$createShopCart({
+        $props: {
+          selectFoods: 'selectFoods',
+          seller: 'seller',
+          show: 'currentFlag'
+        }
+      })
+  },
   methods: {
     fetch() {
       if (!this.fetched) {
@@ -135,7 +148,6 @@ export default {
     selectFood(food) {
       this.selectedFood = food
       this._showFood()
-      this._showShopCartSticky()
     },
     onAdd(event) {
       let ballComp = this.$createBall()
@@ -145,31 +157,14 @@ export default {
       this.foodComp = this.foodComp || this.$createFood({
         $props: {
           food: 'selectedFood'
-        },
-        $events: {
-          add: (target) => {
-            this.shopCartStickyComp.drop(target)
-          },
-          leave: () => {
-            this._hideShopCartSticky()
-          }
         }
       })
       this.foodComp.show()
-    },
-    _showShopCartSticky() {
-      this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
-        $props: {
-          selectFoods: 'selectFoods',
-          deliveryPrice: this.seller.deliveryPrice,
-          minPrice: this.seller.minPrice,
-          fold: true
-        }
-      })
-      this.shopCartStickyComp.show()
-    },
-    _hideShopCartSticky() {
-      this.shopCartStickyComp.hide()
+    }
+  },
+  watch: {
+    currentFlag: function(val) {
+      this.shopCartComp.show = val
     }
   },
   components: {

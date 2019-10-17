@@ -1,3 +1,4 @@
+// 弃用组件
 <template>
   <div class="shop-cart-sticky" v-show="visible">
     <shop-cart

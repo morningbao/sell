@@ -1,24 +1,26 @@
 <template>
   <div>
-    <div class="shopcart">
-      <div class="content" @click="toggleList">
-        <div class="content-left">
-          <div class="logo-wrapper">
-            <div class="logo" :class="{'highlight':totalCount>0}">
-              <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
+    <transition name="cart">
+      <div class="shopcart" v-show="show">
+        <div class="content" @click="toggleList">
+          <div class="content-left">
+            <div class="logo-wrapper">
+              <div class="logo" :class="{'highlight':totalCount>0}">
+                <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
+              </div>
+              <div class="num" v-show="totalCount>0">
+                <bubble :num="totalCount"></bubble>
+              </div>
             </div>
-            <div class="num" v-show="totalCount>0">
-              <bubble :num="totalCount"></bubble>
-            </div>
+            <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
+            <div class="desc">另需配送费￥{{seller.deliveryPrice}}元</div>
           </div>
-          <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
-          <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
-        </div>
-        <div class="content-right" @click="pay">
-          <div class="pay" :class="payClass">{{payDesc}}</div>
+          <div class="content-right" @click="pay">
+            <div class="pay" :class="payClass">{{payDesc}}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -34,26 +36,17 @@ export default {
         return []
       }
     },
-    deliveryPrice: {
-      type: Number,
-      default: 0
-    },
-    minPrice: {
-      type: Number,
-      default: 0
-    },
-    sticky: {
-      type: Boolean,
-      default: false
-    },
-    fold: {
-      type: Boolean,
-      default: true
+    seller: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
     return {
-      listFold: this.fold
+      show: true,
+      listShow: false
     }
   },
   computed: {
@@ -73,9 +66,9 @@ export default {
     },
     payDesc() {
       if (this.totalPrice === 0) {
-        return `￥${this.minPrice}元起送`
-      } else if (this.totalPrice < this.minPrice) {
-        let diff = this.minPrice - this.totalPrice
+        return `￥${this.seller.minPrice}元起送`
+      } else if (this.totalPrice < this.seller.minPrice) {
+        let diff = this.seller.minPrice - this.totalPrice
         return `还差￥${diff}元起送`
       } else {
         return '去结算'
@@ -91,17 +84,18 @@ export default {
   },
   methods: {
     toggleList() {
-      if (this.listFold) {
-        if (!this.totalCount) {
-          return
+      this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
+        $props: {
+          selectFoods: 'selectFoods'
         }
-        this.listFold = false
-        this._showShopCartList()
-        this._showShopCartSticky()
+      })
+      if (this.listShow) {
+        this.shopCartListComp.hide()
       } else {
-        this.listFold = true
-        this._hideShopCartList()
+        this.shopCartListComp.show()
       }
+      this.listShow = !this.listShow
+
     },
     pay(e) {
       if (this.totalPrice < this.minPrice) {
@@ -119,37 +113,13 @@ export default {
           selectFoods: 'selectFoods'
         },
         $events: {
-          leave: () => {
-            this._hideShopCartSticky()
-          },
-          hide: () => {
-            this.listFold = true
-          },
-          add: (el) => {
-            this.shopCartStickyComp.drop(el)
-          }
         }
       })
       this.shopCartListComp.show()
     },
-    _showShopCartSticky() {
-      this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
-        $props: {
-          selectFoods: 'selectFoods',
-          deliveryPrice: 'deliveryPrice',
-          minPrice: 'minPrice',
-          fold: 'listFold',
-          list: this.shopCartListComp
-        }
-      })
-      this.shopCartStickyComp.show()
-    },
     _hideShopCartList() {
-      const list = this.sticky ? this.$parent.list : this.shopCartListComp
+      const list = this.shopCartListComp
       list.hide && list.hide()
-    },
-    _hideShopCartSticky() {
-      this.shopCartStickyComp.hide()
     }
   },
   watch: {
@@ -172,7 +142,16 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .shopcart
-  height: 100%
+  position: absolute
+  left: 0
+  bottom: 0
+  z-index: 999
+  width: 100%
+  height: 48px
+  &.cart-enter-active, &.cart-leave-active
+    transition: bottom 0.1s linear
+  &.cart-enter, &.cart-leave-to
+    bottom: -60px
   .content
     display: flex
     background: $color-background

@@ -11,7 +11,6 @@
       <transition
         name="move"
         appear
-        @after-leave="afterLeave"
       >
         <div v-if="visible">
           <div class="list-header">
@@ -68,14 +67,10 @@
       })
     },
     methods: {
-      onAdd(target) {
-        this.$emit(EVENT_ADD, target)
-      },
-      afterLeave() {
-        this.$emit(EVENT_LEAVE)
-      },
       maskClick() {
         this.hide()
+      },
+      onAdd() {
       },
       empty() {
         this.dialogComp = this.$createDialog({

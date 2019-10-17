@@ -19,7 +19,7 @@
         @change="onChange"
       >
         <cube-slide-item v-for="(tab,index) in tabs" :key="index">
-          <component ref="component" :is="tab.component" :data-obj="tab.data"></component>
+          <component ref="component" :is="tab.component" :data-obj="tab.data" :current-flag="index==currentIndex"></component>
         </cube-slide-item>
       </cube-slide>
     </div>
@@ -52,7 +52,7 @@ export default {
       }
     }
   },
-  data: function () {
+  data() {
     return {
       currentLabel: this.defaultLabel,
       slideOptions: {
